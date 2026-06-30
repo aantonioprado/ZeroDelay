@@ -8,6 +8,7 @@ import(chrome.runtime.getURL('common.js')).then(common => {
     }
 });
 
+
 function main(common) {
     function loadSettings() {
         chrome.storage.local.get(common.storage, data => {
