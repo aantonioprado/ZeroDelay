@@ -9,6 +9,8 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ### Adicionado
 
+- **Acessibilidade**: navegação por setas (padrão ARIA radiogroup, um único
+  tab-stop) nos cartões de modo e `aria-label` nos indicadores do player.
 - Suporte ao **Firefox Desktop**: `manifest.firefox.json`, build em Node e
   tooling `web-ext` (`run:firefox`, `lint:firefox`, `package:firefox`).
 - Pipeline de **CI** (GitHub Actions) rodando lint, testes e build a cada push e
