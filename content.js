@@ -67,6 +67,12 @@ function main(common) {
         }
     });
 
+    chrome.runtime.onMessage.addListener(msg => {
+        if (msg?.type === 'go-live') {
+            document.dispatchEvent(new CustomEvent('_live_catch_up_go_live'));
+        }
+    });
+
     document.addEventListener('_live_catch_up_init', () => {
         clearInterval(detect_interval);
         detect_interval = setInterval(() => {

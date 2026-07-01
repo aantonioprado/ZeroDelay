@@ -433,9 +433,11 @@ function refresh() {
 function renderGoLive() {
     const btn = $('#go-live-action');
     btn.addEventListener('click', () => {
-        common.emitGoLive(v => chrome.storage.local.set(v));
-        
-        // Visual feedback
+        chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+            if (tabs[0]?.id != null) {
+                chrome.tabs.sendMessage(tabs[0].id, { type: 'go-live' });
+            }
+        });
         btn.classList.add('active');
         setTimeout(() => btn.classList.remove('active'), 500);
     });
