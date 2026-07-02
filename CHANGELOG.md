@@ -7,6 +7,8 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## [Não lançado]
 
+## [1.1.1] - 2026-07-02
+
 ### Adicionado
 
 - **Botão "Ir ao Vivo"**: Adicionado botão de ação rápida diretamente no popup para saltar manualmente para o tempo real da live.
