@@ -19,12 +19,38 @@
 
 const STYLE_ID = '_modo_hexa';
 const ROOT_CLASS = 'zd-hexa';
+// Optional "full theme" sub-toggle: the broad green repaint of the whole page.
+// OFF by default — the base theme stays narrow (player + masthead accent + the
+// branded nodes) to avoid noise and impersonating YouTube.
+const FULL_CLASS = 'zd-hexa-full';
 
 // Brazil flag palette. Yellow is used for FILLS/graphics only (never body text
 // — #FFDF00 on light is unreadable); accent text uses the softer canary #FFE44D.
 const CSS = `
-/* ===== Token remap: recolors most YouTube surfaces at once ===== */
-html.${ROOT_CLASS}{
+/* ===== CORE (always on with .zd-hexa): a NARROW accent, not a repaint ==========
+   It dresses the user's page (player + a masthead accent + the branded nodes); it
+   does not recolor YouTube's chrome. Less noise, and no "is this the real
+   YouTube?" ambiguity — the badge keeps it attributed to ZeroDelay. */
+/* Player: the live DVR bar + scrubber go gold, buffered segment blue, live dot gold */
+html.${ROOT_CLASS} .ytp-play-progress,html.${ROOT_CLASS} .ytp-scrubber-button{background:#FFDF00!important;}
+html.${ROOT_CLASS} .ytp-load-progress{background:rgba(0,39,118,.55)!important;}
+html.${ROOT_CLASS} .ytp-live-badge::before{background:#FFDF00!important;}
+html.${ROOT_CLASS} .ytp-live-badge{color:#FFF6D5!important;}
+/* Masthead accent: a green underline + the CBF tricolor rule. The native masthead
+   background is kept, so its text/icons stay readable in light AND dark. */
+html.${ROOT_CLASS} #masthead-container,html.${ROOT_CLASS} ytd-masthead{
+  border-bottom:2px solid #009C3B!important;
+}
+html.${ROOT_CLASS} #masthead-container::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:3px;z-index:2100;
+  background:linear-gradient(90deg,#009C3B 0 33%,#FFDF00 33% 66%,#002776 66% 100%);
+}
+
+/* ===== FULL THEME (opt-in sub-toggle .zd-hexa-full, OFF by default) =============
+   The broad green repaint of the whole page (backgrounds, buttons, chips, chat).
+   Behind a flag so it never applies by default — it is the loudest, most
+   "YouTube-looking" part, so it stays a deliberate choice. */
+html.${ROOT_CLASS}.${FULL_CLASS}{
   --yt-spec-base-background:#04140A!important;
   --yt-spec-raised-background:#0A2414!important;
   --yt-spec-menu-background:#0A2414!important;
@@ -45,33 +71,19 @@ html.${ROOT_CLASS}{
   --yt-spec-10-percent-layer:#1A4028!important;
   --yt-brand-youtube-red:#009C3B!important;
 }
-/* ===== Literal-surface overrides (for surfaces that ignore the tokens) ===== */
-html.${ROOT_CLASS},html.${ROOT_CLASS} body,html.${ROOT_CLASS} ytd-app{
+html.${ROOT_CLASS}.${FULL_CLASS},html.${ROOT_CLASS}.${FULL_CLASS} body,html.${ROOT_CLASS}.${FULL_CLASS} ytd-app{
   background:#04140A!important;transition:background-color .3s ease;
 }
-html.${ROOT_CLASS} #masthead-container,html.${ROOT_CLASS} ytd-masthead{
-  background:#02391C!important;border-bottom:1px solid #009C3B!important;transition:background-color .3s ease;
+html.${ROOT_CLASS}.${FULL_CLASS} #masthead-container,html.${ROOT_CLASS}.${FULL_CLASS} ytd-masthead{
+  background:#02391C!important;transition:background-color .3s ease;
 }
-/* CBF tricolor rule under the masthead */
-html.${ROOT_CLASS} #masthead-container::after{
-  content:'';position:absolute;left:0;right:0;bottom:0;height:3px;z-index:2100;
-  background:linear-gradient(90deg,#009C3B 0 33%,#FFDF00 33% 66%,#002776 66% 100%);
-}
-/* Player: the live DVR bar + scrubber go gold, buffered segment blue, live dot gold */
-html.${ROOT_CLASS} .ytp-play-progress,html.${ROOT_CLASS} .ytp-scrubber-button{background:#FFDF00!important;}
-html.${ROOT_CLASS} .ytp-load-progress{background:rgba(0,39,118,.55)!important;}
-html.${ROOT_CLASS} .ytp-live-badge::before{background:#FFDF00!important;}
-html.${ROOT_CLASS} .ytp-live-badge{color:#FFF6D5!important;}
-/* Filled buttons (Subscribe/Inscrever-se) */
-html.${ROOT_CLASS} .yt-spec-button-shape-next--filled,
-html.${ROOT_CLASS} #subscribe-button button,
-html.${ROOT_CLASS} #subscribe-button tp-yt-paper-button{background:#009C3B!important;color:#FFF6D5!important;}
-/* Selected filter chip: dark text on green passes AA */
-html.${ROOT_CLASS} yt-chip-cloud-chip-renderer[selected],
-html.${ROOT_CLASS} yt-chip-cloud-chip-renderer[aria-selected="true"]{background:#009C3B!important;color:#04140A!important;}
-/* Live-chat author names pick up the gold accent (messages stay ivory) */
-html.${ROOT_CLASS} yt-live-chat-text-message-renderer #author-name,
-html.${ROOT_CLASS} yt-live-chat-author-chip #author-name{color:#FFE44D!important;}
+html.${ROOT_CLASS}.${FULL_CLASS} .yt-spec-button-shape-next--filled,
+html.${ROOT_CLASS}.${FULL_CLASS} #subscribe-button button,
+html.${ROOT_CLASS}.${FULL_CLASS} #subscribe-button tp-yt-paper-button{background:#009C3B!important;color:#FFF6D5!important;}
+html.${ROOT_CLASS}.${FULL_CLASS} yt-chip-cloud-chip-renderer[selected],
+html.${ROOT_CLASS}.${FULL_CLASS} yt-chip-cloud-chip-renderer[aria-selected="true"]{background:#009C3B!important;color:#04140A!important;}
+html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-text-message-renderer #author-name,
+html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FFE44D!important;}
 
 /* ===== Decorative nodes (injected by this module while active) ===== */
 .zd-hexa-badge{
@@ -131,8 +143,8 @@ html.${ROOT_CLASS} yt-live-chat-author-chip #author-name{color:#FFE44D!important
 
 /* ===== Accessibility: honor reduced motion & forced colors ===== */
 @media (prefers-reduced-motion: reduce){
-  html.${ROOT_CLASS},html.${ROOT_CLASS} body,html.${ROOT_CLASS} ytd-app,
-  html.${ROOT_CLASS} #masthead-container,html.${ROOT_CLASS} ytd-masthead{transition:none!important;}
+  html.${ROOT_CLASS}.${FULL_CLASS},html.${ROOT_CLASS}.${FULL_CLASS} body,html.${ROOT_CLASS}.${FULL_CLASS} ytd-app,
+  html.${ROOT_CLASS}.${FULL_CLASS} #masthead-container,html.${ROOT_CLASS}.${FULL_CLASS} ytd-masthead{transition:none!important;}
   .zd-hexa-badge,.zd-hexa-gol,.zd-hexa-toast{animation:none!important;}
   .zd-hexa-invite{transition:none!important;opacity:1!important;transform:translateX(-50%)!important;}
   .zd-hexa-gol,.zd-hexa-confetti{display:none!important;} /* no confetti -> hide its trigger */
@@ -181,8 +193,18 @@ export function setActive(on, activatedLabel) {
     } else {
         clearInterval(keepAlive);
         keepAlive = null;
+        document.documentElement.classList.remove(FULL_CLASS);
         removeNodes();
     }
+}
+
+/**
+ * Toggle the optional "full theme" (broad page repaint). No-op unless the base
+ * theme is on. Off by default; a popup sub-toggle drives it.
+ * @param {boolean} on
+ */
+export function setFull(on) {
+    document.documentElement.classList.toggle(FULL_CLASS, !!on);
 }
 
 /**
