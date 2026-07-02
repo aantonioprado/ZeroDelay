@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="popup.css" />
     <script src="vendor/qrcode.js"></script>
     <script src="popup.js" type="module"></script>
+    <script src="pixel-dissolve.js" type="module"></script>
     <title>ZeroDelay</title>
 </head>
 
 <body>
     <main id="app" class="app">
+        <canvas class="app-scatter" aria-hidden="true"></canvas>
         <header class="app-header">
             <div class="brand">
                 <span class="brand-dot" aria-hidden="true"></span>
