@@ -7,6 +7,11 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## [Não lançado]
 
+### Removido
+
+- **Botão "Ir ao Vivo"** do popup — destoava da interface. O atalho de teclado
+  (`Alt+Shift+L`) continua pulando para o ao vivo.
+
 ## [1.1.1] - 2026-07-02
 
 ### Adicionado
