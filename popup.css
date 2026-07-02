@@ -727,7 +727,10 @@ body {
 }
 
 /* ---------------------------------------------------------------- Support CTA (always visible) */
+/* Speech balloon: reads as the lonely "Apoiar" button (top-right) talking. The
+ * tail is a small rotated square with two borders, poking up toward the button. */
 .support-cta {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -735,6 +738,19 @@ body {
     border: 1px solid rgba(255, 196, 61, 0.38);
     border-radius: var(--radius);
     background: linear-gradient(180deg, rgba(255, 196, 61, 0.13), rgba(255, 196, 61, 0.04));
+}
+
+.support-cta::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    right: 44px;
+    width: 9px;
+    height: 9px;
+    background: rgba(255, 196, 61, 0.13);
+    border-top: 1px solid rgba(255, 196, 61, 0.38);
+    border-left: 1px solid rgba(255, 196, 61, 0.38);
+    transform: rotate(45deg);
 }
 
 .support-cta-text {
