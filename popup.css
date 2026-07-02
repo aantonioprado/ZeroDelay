@@ -119,6 +119,36 @@ body {
     justify-content: center;
 }
 
+/* ---------------------------------------------------------------- Scrollbar */
+/* Thin, minimal, live-red — replaces the chunky default that clashed. */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* A slim red pill: a transparent border + padding-box clip keeps it thin. */
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+    transition: background 150ms var(--ease);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-strong);
+    border-width: 2px;
+}
+
 .app {
     position: relative;
     isolation: isolate;
