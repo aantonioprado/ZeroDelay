@@ -127,6 +127,9 @@ test('detectBrazilMatch fires on a real Brazil matchup title', () => {
     assert.equal(common.detectBrazilMatch('Brasil x Chile | amistoso'), true);                 // lowercase
     assert.equal(common.detectBrazilMatch('BRASÍL X BOLÍVIA | jogo'), true);                    // stray accent
     assert.equal(common.detectBrazilMatch('AO VIVO: BRASIL × COLÔMBIA | COPA'), true);          // "×" separator
+    assert.equal(common.detectBrazilMatch('Brasil e Argentina | Eliminatórias'), true);         // "e" separator
+    assert.equal(common.detectBrazilMatch('BRASIL VS. URUGUAI | amistoso'), true);              // "vs." with period
+    assert.equal(common.detectBrazilMatch('AO VIVO: ARGENTINA VS. BRASIL'), true);              // reversed + period
 });
 
 test('detectBrazilMatch ignores non-Brazil and non-matchup titles', () => {

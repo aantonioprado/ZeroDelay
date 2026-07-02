@@ -422,8 +422,10 @@ export function detectBrazilMatch(title) {
     const segment = title.split('|', 1)[0]
         .normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
     const TEAM = '(?:BRASIL|BRAZIL)';
-    const SEP = '(?:VS|V|X|\\u00D7)';          // "vs", "v", "x", "×"
-    const before = new RegExp(`\\b${TEAM}\\s+${SEP}(?:\\s|$)`);   // BRASIL X ...
-    const after = new RegExp(`(?:^|\\s)${SEP}\\s+${TEAM}\\b`);    // ... X BRASIL
+    // Match separators: "vs"/"vs.", "v", "x", "×", "e"/"and", "&". The theme is now
+    // just SUGGESTED (opt-in), so a looser gate is safe — a false offer is dismissed.
+    const SEP = '(?:VS|V|X|E|AND|&|\\u00D7)';
+    const before = new RegExp(`\\b${TEAM}\\s+${SEP}\\.?\\s`);         // BRASIL X ... / BRASIL VS. ... / BRASIL E ...
+    const after = new RegExp(`(?:^|\\s)${SEP}\\.?\\s+${TEAM}\\b`);    // ... X BRASIL
     return before.test(segment) || after.test(segment);
 }
