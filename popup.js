@@ -441,6 +441,10 @@ function renderSupport() {
 // --------------------------------------------------------------- Refresh
 function refresh() {
     const mode = common.deriveMode(state);
+    // Purely presentational hook: expose the derived signal state so CSS can drive
+    // the global LIVE↔SYNCED seal (red/pulsing when syncing, gray/still when Off).
+    // Reads existing state only — no storage, messages, or behavior touched.
+    $('#app').dataset.signal = mode === 'off' ? 'degraded' : 'synced';
     let activeIndex = -1;
     common.modeOrder.forEach((name, i) => {
         const on = name === mode;
