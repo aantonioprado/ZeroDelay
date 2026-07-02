@@ -8,6 +8,7 @@ import(chrome.runtime.getURL('common.js')).then(common => {
     }
 });
 
+let storageListenersAttached = false;
 
 function main(common) {
     function loadSettings() {
@@ -41,27 +42,37 @@ function main(common) {
     // Reload only when an engine setting actually changed — the donation
     // counter and control keys write storage frequently, and re-sending
     // settings to every YouTube frame on each of those writes is pure churn.
-    chrome.storage.onChanged.addListener((changes, area) => {
+    function onEngineSettingsChanged(changes, area) {
         if (area === 'local' && common.storage.some(k => k in changes)) loadSettings();
-    });
+    }
 
     // Forward the "jump to live" storage signal to the engine. Any change to the
     // nonce means "seek to live now"; the value itself is irrelevant.
-    chrome.storage.onChanged.addListener((changes, area) => {
+    function onGoLiveSignalChanged(changes, area) {
         if (area === 'local' && changes[common.goLiveSignalKey]) {
             document.dispatchEvent(new CustomEvent('_live_catch_up_go_live'));
         }
-    });
+    }
+
+    // Guard against double-registration if the content script re-inits in the
+    // same page — storage listeners would otherwise stack up (PR #17).
+    if (!storageListenersAttached) {
+        storageListenersAttached = true;
+        chrome.storage.onChanged.addListener(onEngineSettingsChanged);
+        chrome.storage.onChanged.addListener(onGoLiveSignalChanged);
+    }
 
     document.addEventListener('_live_catch_up_init', () => {
         clearInterval(detect_interval);
-        detect_interval = setInterval(() => {
+        let my_interval;
+        my_interval = detect_interval = setInterval(() => {
             const player = document.getElementById("movie_player");
             if (!player) {
                 return;
             }
 
-            clearInterval(detect_interval);
+            clearInterval(my_interval);
+            if (detect_interval === my_interval) detect_interval = null;
 
             loadSettings();
         }, 500);

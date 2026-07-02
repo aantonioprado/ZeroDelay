@@ -63,6 +63,12 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 - `bump.mjs` agora versiona também `manifest.firefox.json` e
   `package-lock.json`; `validate.mjs` valida os dois manifests e acusa
   divergência de versão entre eles.
+- Vazamentos de memória em navegações consecutivas: listener preso ao
+  `<video>` antigo quando o YouTube trocava o elemento (ex.: live → live) sem
+  removê-lo; risco de listeners duplicados em `chrome.storage.onChanged` caso
+  o content script fosse reinicializado na mesma aba; e uma race condition no
+  `setInterval` de detecção do player quando `yt-navigate-finish` disparava em
+  sequência rápida (PR #17).
 
 ### Alterado (interno)
 

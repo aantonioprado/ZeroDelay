@@ -502,6 +502,11 @@
         seekableEnds = [];
 
         if (bound_video !== v) {
+            // Detach the previous <video>'s listener before binding the new one,
+            // so the old element can be garbage-collected after a live→live
+            // navigation instead of being pinned by the closure (PR #17). The
+            // `ratechange` listener was dropped entirely — nothing consumes it.
+            if (bound_video) bound_video.removeEventListener('waiting', on_video_waiting);
             v.addEventListener('waiting', on_video_waiting);
             bound_video = v;
         }
