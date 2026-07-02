@@ -244,10 +244,11 @@ body {
     transform: scale(0.99);
 }
 
+/* Selected = synced: the card locks to the live-red signal. */
 .mode-card[aria-checked="true"] {
-    border-color: var(--accent);
-    background: linear-gradient(180deg, var(--accent-soft), transparent 140%);
-    box-shadow: 0 0 0 1px var(--accent), 0 8px 24px -12px var(--accent-glow);
+    border-color: var(--sync);
+    background: linear-gradient(180deg, var(--sync-soft), transparent 140%);
+    box-shadow: 0 0 0 1px var(--sync), 0 8px 24px -12px var(--sync-glow);
 }
 
 .mode-icon {
@@ -258,12 +259,13 @@ body {
     place-items: center;
     border-radius: 50%;
     background: var(--surface-3);
-    color: var(--text-dim);
+    /* Raw signal at rest — the pixel glyph reads in degraded gray. */
+    color: var(--degraded);
     transition: background 160ms var(--ease), color 160ms var(--ease);
 }
 
 .mode-card[aria-checked="true"] .mode-icon {
-    background: var(--accent);
+    background: var(--sync);
     color: #fff;
 }
 
@@ -343,10 +345,12 @@ body {
     font-weight: 500;
     color: var(--text-faint);
     white-space: normal;
+    /* Connection figures (Mbps) read as telemetry — mono, tabular. */
+    font-variant-numeric: tabular-nums;
 }
 
 .mode-card[aria-checked="true"] .mode-conn {
-    color: var(--accent-strong);
+    color: var(--sync-strong);
 }
 
 .conn-icon {
@@ -361,6 +365,7 @@ body {
     height: 14px;
 }
 
+/* Buffer telemetry badge — degraded gray until this mode is the synced one. */
 .mode-gain {
     display: inline-flex;
     align-items: center;
@@ -371,9 +376,14 @@ body {
     border-radius: 999px;
     font-size: 11px;
     font-weight: 700;
-    background: var(--accent-soft);
-    color: var(--accent-strong);
+    background: var(--degraded-soft);
+    color: var(--degraded-strong);
     font-variant-numeric: tabular-nums;
+}
+
+.mode-card[aria-checked="true"] .mode-gain:not(.is-none) {
+    background: var(--sync-soft);
+    color: var(--sync-strong);
 }
 
 .mode-gain.is-none {
@@ -409,12 +419,12 @@ body {
     height: 12px;
     opacity: 0;
     transform: scale(0.4);
-    transition: opacity 160ms var(--ease), transform 160ms var(--ease);
+    transition: opacity 160ms var(--ease), transform 220ms var(--spring);
 }
 
 .mode-card[aria-checked="true"] .mode-check {
-    border-color: var(--accent);
-    background: var(--accent);
+    border-color: var(--sync);
+    background: var(--sync);
 }
 
 .mode-card[aria-checked="true"] .mode-check svg {
