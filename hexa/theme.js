@@ -97,14 +97,19 @@ html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FF
 }
 .zd-hexa-badge .zd-hexa-stars{color:#FFDF00;letter-spacing:1px;}
 .zd-hexa-badge--masthead{margin:0 10px;align-self:center;}
+/* Bottom-right, clear of the title/cards (top) and above the control bar
+   (bottom). Stays inside #movie_player so it shows in fullscreen too. */
 .zd-hexa-gol{
-  position:absolute;left:14px;top:14px;z-index:60;cursor:pointer;
-  border:2px solid #002776;border-radius:999px;padding:7px 15px;
+  position:absolute;right:16px;bottom:68px;z-index:60;cursor:pointer;
+  border:2px solid #002776;border-radius:999px;padding:6px 13px;
   background:linear-gradient(#FFDF00,#F5C400);
-  color:#04140A;font:800 13px/1 Roboto,system-ui,sans-serif;letter-spacing:.5px;
-  box-shadow:0 2px 8px rgba(0,0,0,.45);opacity:.9;animation:zd-hexa-pop .3s ease both;
+  color:#04140A;font:800 12px/1 Roboto,system-ui,sans-serif;letter-spacing:.5px;
+  box-shadow:0 2px 8px rgba(0,0,0,.45);opacity:.85;
+  transition:opacity .15s ease,transform .15s ease;animation:zd-hexa-pop .3s ease both;
 }
-.zd-hexa-gol:hover{opacity:1;}
+.zd-hexa-gol:hover{opacity:1;transform:translateY(-1px);}
+.zd-hexa-gol:active{transform:translateY(0) scale(.96);}
+.zd-hexa-gol:focus-visible{outline:2px solid #FFF6D5;outline-offset:2px;}
 .zd-hexa-toast{
   position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(8px);
   z-index:2147483646;display:flex;align-items:center;gap:8px;padding:11px 17px;
@@ -113,9 +118,13 @@ html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FF
   opacity:0;transition:opacity .3s ease,transform .3s ease;
 }
 .zd-hexa-toast.zd-hexa-in{opacity:1;transform:translateX(-50%) translateY(0);}
-.zd-hexa-confetti{position:fixed;inset:0;z-index:2147483645;pointer-events:none;overflow:hidden;}
+.zd-hexa-confetti{position:fixed;inset:0;z-index:2147483645;pointer-events:none;overflow:hidden;animation:zd-hexa-resolve .4s ease both;}
 .zd-hexa-confetti i{position:absolute;top:-24px;width:8px;height:14px;border-radius:2px;animation:zd-hexa-fall linear forwards;}
+/* A few pieces are little tricolor flags (bandeirinhas). */
+.zd-hexa-confetti i.zd-hexa-flag{width:13px;height:9px;border-radius:1px;}
 @keyframes zd-hexa-fall{to{transform:translateY(110vh) rotate(600deg);opacity:.85;}}
+/* The burst materializes from a degraded blur to sharp before it falls. */
+@keyframes zd-hexa-resolve{from{filter:blur(7px);opacity:0;}to{filter:blur(0);opacity:1;}}
 /* Nodes resolve from a degraded (blurred) state to sharp — the product's
    degraded -> nitido signature, wearing the jersey. */
 @keyframes zd-hexa-pop{from{opacity:0;transform:scale(.9);filter:blur(4px);}to{opacity:1;filter:blur(0);}}
@@ -328,17 +337,23 @@ function removeNodes() {
 function fireConfetti() {
     if (reduceMotion()) return;
     const layer = make('div', 'zd-hexa-confetti');
-    const colors = ['#009C3B', '#FFDF00', '#002776', '#FFF6D5'];
-    for (let i = 0; i < 44; i++) {
+    const colors = ['#009C3B', '#FFDF00', '#002776'];   // flag colors, no ivory
+    const TRICOLOR = 'linear-gradient(#009C3B 0 33%,#FFDF00 33% 66%,#002776 66% 100%)';
+    for (let i = 0; i < 42; i++) {
         const p = document.createElement('i');
         p.style.left = Math.random() * 100 + 'vw';
-        p.style.background = colors[i % colors.length];
-        p.style.animationDuration = (1.6 + Math.random() * 1.2) + 's';
-        p.style.animationDelay = (Math.random() * 0.25) + 's';
+        if (i % 6 === 0) {                              // every 6th piece is a tricolor flag
+            p.className = 'zd-hexa-flag';
+            p.style.background = TRICOLOR;
+        } else {
+            p.style.background = colors[i % colors.length];
+        }
+        p.style.animationDuration = (1.4 + Math.random() * 1.0) + 's';
+        p.style.animationDelay = (Math.random() * 0.2) + 's';
         layer.appendChild(p);
     }
     document.body.appendChild(layer);
-    setTimeout(() => layer.remove(), 3200);
+    setTimeout(() => layer.remove(), 2800);
 }
 
 // One-shot "boot" flash on activation: a tricolor that resolves blur -> sharp,
