@@ -33,9 +33,10 @@ const CSS = `
    It dresses the user's page (player + a masthead accent + the branded nodes); it
    does not recolor YouTube's chrome. Less noise, and no "is this the real
    YouTube?" ambiguity — the badge keeps it attributed to ZeroDelay. */
-/* Player: the live DVR bar + scrubber go gold, buffered segment blue, live dot gold */
 /* Progress bar: a slow tricolor gradient that shimmers along, so it reads as the
-   selecao's colors flowing, not a flat yellow "ad" bar. */
+   selecao's colors flowing, not a flat yellow "ad" bar. The LIVE badge is left
+   untouched on purpose — its red = "you're at the live edge", which is exactly
+   what the extension delivers; tinting it yellow would fight the whole product. */
 html.${ROOT_CLASS} .ytp-play-progress{
   background-image:linear-gradient(90deg,#00A63F,#FFE14D,#2f7bff,#FFE14D,#00A63F)!important;
   background-size:300% 100%!important;
@@ -44,13 +45,8 @@ html.${ROOT_CLASS} .ytp-play-progress{
 html.${ROOT_CLASS} .ytp-scrubber-button{background:#FFE14D!important;box-shadow:0 0 0 2px rgba(0,39,118,.5)!important;}
 html.${ROOT_CLASS} .ytp-load-progress{background:rgba(0,39,118,.85)!important;}
 @keyframes zd-hexa-bar{from{background-position:0 0;}to{background-position:300% 0;}}
-html.${ROOT_CLASS} .ytp-live-badge::before{background:#FFDF00!important;}
-html.${ROOT_CLASS} .ytp-live-badge{color:#FFF6D5!important;}
-/* Masthead accent: a green underline + the CBF tricolor rule. The native masthead
-   background is kept, so its text/icons stay readable in light AND dark. */
-html.${ROOT_CLASS} #masthead-container,html.${ROOT_CLASS} ytd-masthead{
-  border-bottom:2px solid #009C3B!important;
-}
+/* Masthead accent = the bunting garland below (no coloured border line, which
+   clashed with the flags' own string). */
 /* Bunting garland (varal de bandeirinhas) hanging from the masthead — the flags
    are pennants cycling green/yellow/blue, swaying gently; it drops in on boot. */
 .zd-hexa-bunting{
@@ -103,9 +99,9 @@ html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FF
 /* Shaped like YouTube's own masthead buttons (e.g. +Criar): 36px pill, so it
    sits coherently next to them — branded by content, not by mimicking chrome. */
 .zd-hexa-badge{
-  display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;
-  border-radius:18px;border:1px solid rgba(255,223,0,.35);
-  background:rgba(0,156,59,.16);color:#FFF6D5;
+  display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 15px;box-sizing:border-box;
+  border-radius:20px;border:1px solid rgba(255,223,0,.3);
+  background:rgba(0,156,59,.18);color:#FFF6D5;
   font:600 14px/1 Roboto,"Segoe UI",system-ui,sans-serif;letter-spacing:.2px;
   white-space:nowrap;vertical-align:middle;animation:zd-hexa-pop .34s ${SPRING} both;
 }
@@ -116,18 +112,18 @@ html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FF
 /* Sits in the watch action row, to the LEFT of Like — same 36px pill as the
    native action buttons, gold so it still pops (and pulses) among the grey ones. */
 .zd-hexa-gol{
-  display:inline-flex;align-items:center;gap:6px;flex:none;vertical-align:middle;
-  height:36px;padding:0 16px;margin-right:8px;cursor:pointer;border:0;border-radius:18px;
+  display:inline-flex;align-items:center;gap:6px;flex:none;vertical-align:middle;box-sizing:border-box;
+  height:36px;padding:0 15px;margin-right:8px;cursor:pointer;border:0;border-radius:18px;
   background:linear-gradient(#FFE44D,#FFC400);color:#04140A;
-  font:700 14px/1 Roboto,system-ui,sans-serif;letter-spacing:.2px;
-  box-shadow:0 0 0 3px rgba(255,223,0,.18);
+  font:600 14px/1 Roboto,system-ui,sans-serif;letter-spacing:.2px;
+  box-shadow:0 2px 10px rgba(255,223,0,.35);
   transition:transform .18s ${SPRING},box-shadow .2s ease;
   animation:zd-hexa-pop .34s ${SPRING} both,zd-hexa-golpulse 1.9s ease-in-out .5s infinite;
 }
-.zd-hexa-gol:hover{transform:translateY(-1px);box-shadow:0 0 0 4px rgba(255,223,0,.32);}
+.zd-hexa-gol:hover{transform:translateY(-1px);box-shadow:0 2px 14px rgba(255,223,0,.55);}
 .zd-hexa-gol:active{transform:scale(.96);}
 .zd-hexa-gol:focus-visible{outline:3px solid #FFF6D5;outline-offset:2px;}
-@keyframes zd-hexa-golpulse{0%,100%{box-shadow:0 0 0 3px rgba(255,223,0,.18);}50%{box-shadow:0 0 0 7px rgba(255,223,0,.02);}}
+@keyframes zd-hexa-golpulse{0%,100%{box-shadow:0 2px 10px rgba(255,223,0,.3);}50%{box-shadow:0 2px 16px rgba(255,223,0,.6);}}
 .zd-hexa-toast{
   position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(8px);
   z-index:2147483646;display:flex;align-items:center;gap:8px;padding:11px 17px;
