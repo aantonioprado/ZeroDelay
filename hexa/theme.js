@@ -37,12 +37,13 @@ const CSS = `
 /* Progress bar: a slow tricolor gradient that shimmers along, so it reads as the
    selecao's colors flowing, not a flat yellow "ad" bar. */
 html.${ROOT_CLASS} .ytp-play-progress{
-  background:linear-gradient(90deg,#009C3B,#FFDF00,#2f6be0,#FFDF00,#009C3B)!important;
-  background-size:200% 100%!important;animation:zd-hexa-bar 4s linear infinite;
+  background-image:linear-gradient(90deg,#00A63F,#FFE14D,#2f7bff,#FFE14D,#00A63F)!important;
+  background-size:300% 100%!important;
+  animation:zd-hexa-bar 5s linear infinite!important;
 }
-html.${ROOT_CLASS} .ytp-scrubber-button{background:#FFDF00!important;box-shadow:0 0 0 2px rgba(0,39,118,.5)!important;}
-html.${ROOT_CLASS} .ytp-load-progress{background:rgba(0,39,118,.9)!important;}
-@keyframes zd-hexa-bar{to{background-position:-200% 0;}}
+html.${ROOT_CLASS} .ytp-scrubber-button{background:#FFE14D!important;box-shadow:0 0 0 2px rgba(0,39,118,.5)!important;}
+html.${ROOT_CLASS} .ytp-load-progress{background:rgba(0,39,118,.85)!important;}
+@keyframes zd-hexa-bar{from{background-position:0 0;}to{background-position:300% 0;}}
 html.${ROOT_CLASS} .ytp-live-badge::before{background:#FFDF00!important;}
 html.${ROOT_CLASS} .ytp-live-badge{color:#FFF6D5!important;}
 /* Masthead accent: a green underline + the CBF tricolor rule. The native masthead
@@ -53,18 +54,11 @@ html.${ROOT_CLASS} #masthead-container,html.${ROOT_CLASS} ytd-masthead{
 /* Bunting garland (varal de bandeirinhas) hanging from the masthead — the flags
    are pennants cycling green/yellow/blue, swaying gently; it drops in on boot. */
 .zd-hexa-bunting{
-  position:fixed;left:0;right:0;top:56px;height:18px;z-index:1800;
-  display:flex;justify-content:space-around;align-items:flex-start;
-  pointer-events:none;animation:zd-hexa-drop .5s ${SPRING} both;
+  position:fixed;left:0;right:0;top:55px;height:40px;z-index:1800;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='132' height='44' viewBox='0 0 132 44'%3E%3Cpath d='M0 5Q66 22 132 5' fill='none' stroke='%230b3b22' stroke-width='2'/%3E%3Cpolygon points='10,9 34,9 34,32 22,21 10,32' fill='%2300A63F'/%3E%3Cpolygon points='54,14 78,14 78,28 66,38 54,28' fill='%23FFDF00'/%3E%3Cpolygon points='98,9 122,9 122,32 110,21 98,32' fill='%23002776'/%3E%3C/svg%3E") repeat-x left top;
+  background-size:132px 44px;animation:zd-hexa-drop .5s ${SPRING} both;
 }
-.zd-hexa-bunting::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:#0b3b22;}
-.zd-hexa-bunting i{
-  width:15px;height:15px;background:var(--c);transform-origin:top center;
-  clip-path:polygon(0 0,100% 0,50% 100%);
-  animation:zd-hexa-sway 2.8s ease-in-out infinite;
-}
-@keyframes zd-hexa-drop{from{transform:translateY(-18px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-@keyframes zd-hexa-sway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
+@keyframes zd-hexa-drop{from{transform:translateY(-22px);opacity:0;}to{transform:translateY(0);opacity:1;}}
 
 /* ===== FULL THEME (opt-in sub-toggle .zd-hexa-full, OFF by default) =============
    The broad green repaint of the whole page (backgrounds, buttons, chips, chat).
@@ -106,35 +100,34 @@ html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-text-message-renderer #author-name
 html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FFE44D!important;}
 
 /* ===== Decorative nodes (injected by this module while active) ===== */
+/* Shaped like YouTube's own masthead buttons (e.g. +Criar): 36px pill, so it
+   sits coherently next to them — branded by content, not by mimicking chrome. */
 .zd-hexa-badge{
-  display:inline-flex;align-items:center;height:26px;padding-right:11px;gap:7px;
-  border-radius:8px;overflow:hidden;background:linear-gradient(#0A311D,#04220F);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 2px 8px rgba(0,0,0,.4);
-  color:#FFF6D5;font:800 10.5px/1 Roboto,"Segoe UI",system-ui,sans-serif;
-  letter-spacing:.7px;white-space:nowrap;vertical-align:middle;
-  animation:zd-hexa-pop .34s ${SPRING} both;
+  display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;
+  border-radius:18px;border:1px solid rgba(255,223,0,.35);
+  background:rgba(0,156,59,.16);color:#FFF6D5;
+  font:600 14px/1 Roboto,"Segoe UI",system-ui,sans-serif;letter-spacing:.2px;
+  white-space:nowrap;vertical-align:middle;animation:zd-hexa-pop .34s ${SPRING} both;
 }
-.zd-hexa-badge .zd-hexa-cap{align-self:stretch;width:7px;flex:none;background:linear-gradient(#009C3B 0 33%,#FFDF00 33% 66%,#002776 66% 100%);}
-.zd-hexa-badge .zd-hexa-badge-label{padding-left:2px;}
-.zd-hexa-badge .zd-hexa-stars{display:inline-flex;gap:1px;font-size:11px;letter-spacing:1px;}
+.zd-hexa-badge .zd-hexa-stars{display:inline-flex;gap:1px;font-size:12px;letter-spacing:1px;}
 .zd-hexa-badge .zd-hexa-star-on{color:#FFDF00;}
 .zd-hexa-badge .zd-hexa-star-6{color:#5b8cff;}
-.zd-hexa-badge--masthead{margin:0 10px;align-self:center;}
-/* Bottom-right, clear of the title/cards (top) and above the control bar
-   (bottom). Stays inside #movie_player so it shows in fullscreen too. */
+.zd-hexa-badge--masthead{margin:0 8px;align-self:center;}
+/* Sits in the watch action row, to the LEFT of Like — same 36px pill as the
+   native action buttons, gold so it still pops (and pulses) among the grey ones. */
 .zd-hexa-gol{
-  position:absolute;right:18px;bottom:74px;z-index:60;cursor:pointer;
-  border:2px solid #009C3B;border-radius:999px;padding:10px 20px;
-  background:linear-gradient(#FFE44D,#FFC400);
-  color:#04140A;font:900 16px/1 Roboto,system-ui,sans-serif;letter-spacing:.5px;
-  box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 0 3px rgba(255,223,0,.22);
+  display:inline-flex;align-items:center;gap:6px;flex:none;vertical-align:middle;
+  height:36px;padding:0 16px;margin-right:8px;cursor:pointer;border:0;border-radius:18px;
+  background:linear-gradient(#FFE44D,#FFC400);color:#04140A;
+  font:700 14px/1 Roboto,system-ui,sans-serif;letter-spacing:.2px;
+  box-shadow:0 0 0 3px rgba(255,223,0,.18);
   transition:transform .18s ${SPRING},box-shadow .2s ease;
-  animation:zd-hexa-pop .34s ${SPRING} both,zd-hexa-golpulse 1.8s ease-in-out .5s infinite;
+  animation:zd-hexa-pop .34s ${SPRING} both,zd-hexa-golpulse 1.9s ease-in-out .5s infinite;
 }
-.zd-hexa-gol:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 6px 18px rgba(0,0,0,.55),0 0 0 4px rgba(255,223,0,.35);}
-.zd-hexa-gol:active{transform:translateY(0) scale(.96);}
+.zd-hexa-gol:hover{transform:translateY(-1px);box-shadow:0 0 0 4px rgba(255,223,0,.32);}
+.zd-hexa-gol:active{transform:scale(.96);}
 .zd-hexa-gol:focus-visible{outline:3px solid #FFF6D5;outline-offset:2px;}
-@keyframes zd-hexa-golpulse{0%,100%{box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 0 3px rgba(255,223,0,.22);}50%{box-shadow:0 4px 18px rgba(0,0,0,.5),0 0 0 8px rgba(255,223,0,.04);}}
+@keyframes zd-hexa-golpulse{0%,100%{box-shadow:0 0 0 3px rgba(255,223,0,.18);}50%{box-shadow:0 0 0 7px rgba(255,223,0,.02);}}
 .zd-hexa-toast{
   position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(8px);
   z-index:2147483646;display:flex;align-items:center;gap:8px;padding:11px 17px;
@@ -208,7 +201,7 @@ html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FF
   html.${ROOT_CLASS}.${FULL_CLASS},html.${ROOT_CLASS}.${FULL_CLASS} body,html.${ROOT_CLASS}.${FULL_CLASS} ytd-app,
   html.${ROOT_CLASS}.${FULL_CLASS} #masthead-container,html.${ROOT_CLASS}.${FULL_CLASS} ytd-masthead{transition:none!important;}
   .zd-hexa-badge,.zd-hexa-gol,.zd-hexa-toast{animation:none!important;}
-  .zd-hexa-bunting,.zd-hexa-bunting i{animation:none!important;}
+  .zd-hexa-bunting{animation:none!important;}
   html.${ROOT_CLASS} .ytp-play-progress{animation:none!important;}
   .zd-hexa-toast{transition:none!important;}
   .zd-hexa-invite{transition:none!important;opacity:1!important;transform:translateX(-50%)!important;}
@@ -319,7 +312,6 @@ function make(tag, cls, text) {
 
 function buildBadge() {
     const b = make('span', 'zd-hexa-badge');
-    b.append(make('span', 'zd-hexa-cap'));                          // tricolor left cap
     b.append(make('span', 'zd-hexa-badge-label', 'RUMO AO HEXA'));
     const stars = make('span', 'zd-hexa-stars');
     stars.append(make('span', 'zd-hexa-star-on', '★★★★★'));         // 5 titles, gold
@@ -338,15 +330,7 @@ function ensureNodes() {
 }
 
 function buildBunting() {
-    const b = make('div', 'zd-hexa-bunting');
-    const colors = ['#009C3B', '#FFDF00', '#002776'];
-    for (let i = 0; i < 30; i++) {
-        const p = document.createElement('i');
-        p.style.setProperty('--c', colors[i % 3]);
-        p.style.animationDelay = ((i % 6) * 0.12) + 's';   // a travelling wave along the string
-        b.appendChild(p);
-    }
-    return b;
+    return make('div', 'zd-hexa-bunting');   // shape lives in the tiled SVG background
 }
 
 function ensureBunting() {
@@ -367,14 +351,15 @@ function ensureMastheadBadge() {
 
 function ensureGolButton() {
     if (nodes.gol && nodes.gol.isConnected) return;
-    const player = document.getElementById('movie_player');
-    if (!player) return;
+    // Watch action row (Like/Share/Save). GOL goes first, to the left of Like.
+    const host = document.querySelector('#top-level-buttons-computed');
+    if (!host) return;
     const btn = make('button', 'zd-hexa-gol', '⚽ GOL!');
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Comemorar gol do Brasil');
     btn.addEventListener('click', fireConfetti);
     nodes.gol = btn;
-    player.appendChild(btn);
+    host.insertBefore(btn, host.firstChild);
 }
 
 function removeNodes() {
