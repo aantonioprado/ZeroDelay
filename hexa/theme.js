@@ -34,8 +34,15 @@ const CSS = `
    does not recolor YouTube's chrome. Less noise, and no "is this the real
    YouTube?" ambiguity — the badge keeps it attributed to ZeroDelay. */
 /* Player: the live DVR bar + scrubber go gold, buffered segment blue, live dot gold */
-html.${ROOT_CLASS} .ytp-play-progress,html.${ROOT_CLASS} .ytp-scrubber-button{background:#FFDF00!important;}
+/* Progress bar: a slow tricolor gradient that shimmers along, so it reads as the
+   selecao's colors flowing, not a flat yellow "ad" bar. */
+html.${ROOT_CLASS} .ytp-play-progress{
+  background:linear-gradient(90deg,#009C3B,#FFDF00,#2f6be0,#FFDF00,#009C3B)!important;
+  background-size:200% 100%!important;animation:zd-hexa-bar 4s linear infinite;
+}
+html.${ROOT_CLASS} .ytp-scrubber-button{background:#FFDF00!important;box-shadow:0 0 0 2px rgba(0,39,118,.5)!important;}
 html.${ROOT_CLASS} .ytp-load-progress{background:rgba(0,39,118,.9)!important;}
+@keyframes zd-hexa-bar{to{background-position:-200% 0;}}
 html.${ROOT_CLASS} .ytp-live-badge::before{background:#FFDF00!important;}
 html.${ROOT_CLASS} .ytp-live-badge{color:#FFF6D5!important;}
 /* Masthead accent: a green underline + the CBF tricolor rule. The native masthead
@@ -43,13 +50,21 @@ html.${ROOT_CLASS} .ytp-live-badge{color:#FFF6D5!important;}
 html.${ROOT_CLASS} #masthead-container,html.${ROOT_CLASS} ytd-masthead{
   border-bottom:2px solid #009C3B!important;
 }
-html.${ROOT_CLASS} #masthead-container::after{
-  content:'';position:absolute;left:0;right:0;bottom:0;height:4px;z-index:2100;
-  background:linear-gradient(90deg,#009C3B 0 33%,#FFDF00 33% 66%,#002776 66% 100%);
-  animation:zd-hexa-sync .6s ease both;
+/* Bunting garland (varal de bandeirinhas) hanging from the masthead — the flags
+   are pennants cycling green/yellow/blue, swaying gently; it drops in on boot. */
+.zd-hexa-bunting{
+  position:fixed;left:0;right:0;top:56px;height:18px;z-index:1800;
+  display:flex;justify-content:space-around;align-items:flex-start;
+  pointer-events:none;animation:zd-hexa-drop .5s ${SPRING} both;
 }
-/* The tricolor "syncs" in on activation: wipes left to right, blur -> sharp. */
-@keyframes zd-hexa-sync{from{clip-path:inset(0 100% 0 0);filter:blur(3px);}to{clip-path:inset(0 0 0 0);filter:blur(0);}}
+.zd-hexa-bunting::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:#0b3b22;}
+.zd-hexa-bunting i{
+  width:15px;height:15px;background:var(--c);transform-origin:top center;
+  clip-path:polygon(0 0,100% 0,50% 100%);
+  animation:zd-hexa-sway 2.8s ease-in-out infinite;
+}
+@keyframes zd-hexa-drop{from{transform:translateY(-18px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes zd-hexa-sway{0%,100%{transform:rotate(-4deg);}50%{transform:rotate(4deg);}}
 
 /* ===== FULL THEME (opt-in sub-toggle .zd-hexa-full, OFF by default) =============
    The broad green repaint of the whole page (backgrounds, buttons, chips, chat).
@@ -92,26 +107,34 @@ html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FF
 
 /* ===== Decorative nodes (injected by this module while active) ===== */
 .zd-hexa-badge{
-  display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;
-  border:1px solid #FFDF00;border-radius:999px;background:#02391C;color:#FFE44D;
-  font:700 11px/1 Roboto,"Segoe UI",system-ui,sans-serif;letter-spacing:.4px;
-  white-space:nowrap;vertical-align:middle;animation:zd-hexa-pop .34s ${SPRING} both;
+  display:inline-flex;align-items:center;height:26px;padding-right:11px;gap:7px;
+  border-radius:8px;overflow:hidden;background:linear-gradient(#0A311D,#04220F);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 2px 8px rgba(0,0,0,.4);
+  color:#FFF6D5;font:800 10.5px/1 Roboto,"Segoe UI",system-ui,sans-serif;
+  letter-spacing:.7px;white-space:nowrap;vertical-align:middle;
+  animation:zd-hexa-pop .34s ${SPRING} both;
 }
-.zd-hexa-badge .zd-hexa-stars{color:#FFDF00;letter-spacing:1px;}
+.zd-hexa-badge .zd-hexa-cap{align-self:stretch;width:7px;flex:none;background:linear-gradient(#009C3B 0 33%,#FFDF00 33% 66%,#002776 66% 100%);}
+.zd-hexa-badge .zd-hexa-badge-label{padding-left:2px;}
+.zd-hexa-badge .zd-hexa-stars{display:inline-flex;gap:1px;font-size:11px;letter-spacing:1px;}
+.zd-hexa-badge .zd-hexa-star-on{color:#FFDF00;}
+.zd-hexa-badge .zd-hexa-star-6{color:#5b8cff;}
 .zd-hexa-badge--masthead{margin:0 10px;align-self:center;}
 /* Bottom-right, clear of the title/cards (top) and above the control bar
    (bottom). Stays inside #movie_player so it shows in fullscreen too. */
 .zd-hexa-gol{
-  position:absolute;right:16px;bottom:68px;z-index:60;cursor:pointer;
-  border:2px solid #002776;border-radius:999px;padding:6px 13px;
-  background:linear-gradient(#FFDF00,#F5C400);
-  color:#04140A;font:800 12px/1 Roboto,system-ui,sans-serif;letter-spacing:.5px;
-  box-shadow:0 2px 8px rgba(0,0,0,.45);opacity:.85;
-  transition:opacity .15s ease,transform .18s ${SPRING};animation:zd-hexa-pop .34s ${SPRING} both;
+  position:absolute;right:18px;bottom:74px;z-index:60;cursor:pointer;
+  border:2px solid #009C3B;border-radius:999px;padding:10px 20px;
+  background:linear-gradient(#FFE44D,#FFC400);
+  color:#04140A;font:900 16px/1 Roboto,system-ui,sans-serif;letter-spacing:.5px;
+  box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 0 3px rgba(255,223,0,.22);
+  transition:transform .18s ${SPRING},box-shadow .2s ease;
+  animation:zd-hexa-pop .34s ${SPRING} both,zd-hexa-golpulse 1.8s ease-in-out .5s infinite;
 }
-.zd-hexa-gol:hover{opacity:1;transform:translateY(-2px);}
-.zd-hexa-gol:active{transform:translateY(0) scale(.95);}
-.zd-hexa-gol:focus-visible{outline:2px solid #FFF6D5;outline-offset:2px;}
+.zd-hexa-gol:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 6px 18px rgba(0,0,0,.55),0 0 0 4px rgba(255,223,0,.35);}
+.zd-hexa-gol:active{transform:translateY(0) scale(.96);}
+.zd-hexa-gol:focus-visible{outline:3px solid #FFF6D5;outline-offset:2px;}
+@keyframes zd-hexa-golpulse{0%,100%{box-shadow:0 4px 14px rgba(0,0,0,.5),0 0 0 3px rgba(255,223,0,.22);}50%{box-shadow:0 4px 18px rgba(0,0,0,.5),0 0 0 8px rgba(255,223,0,.04);}}
 .zd-hexa-toast{
   position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(8px);
   z-index:2147483646;display:flex;align-items:center;gap:8px;padding:11px 17px;
@@ -122,8 +145,11 @@ html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FF
 .zd-hexa-toast.zd-hexa-in{opacity:1;transform:translateX(-50%) translateY(0);}
 .zd-hexa-confetti{position:fixed;inset:0;z-index:2147483645;pointer-events:none;overflow:hidden;animation:zd-hexa-resolve .4s ease both;}
 .zd-hexa-confetti i{position:absolute;top:-24px;width:8px;height:14px;border-radius:2px;animation:zd-hexa-fall linear forwards;}
-/* A few pieces are little tricolor flags (bandeirinhas). */
+/* Some pieces are tricolor pennants; others are little Brazil flags. */
 .zd-hexa-confetti i.zd-hexa-flag{width:13px;height:9px;border-radius:1px;}
+.zd-hexa-confetti i.zd-hexa-bandeira{width:15px;height:11px;border-radius:1px;background:#009C3B;overflow:hidden;}
+.zd-hexa-confetti i.zd-hexa-bandeira::before{content:'';position:absolute;left:50%;top:50%;width:8px;height:8px;transform:translate(-50%,-50%) rotate(45deg);background:#FFDF00;}
+.zd-hexa-confetti i.zd-hexa-bandeira::after{content:'';position:absolute;left:50%;top:50%;width:3.6px;height:3.6px;transform:translate(-50%,-50%);border-radius:50%;background:#002776;}
 @keyframes zd-hexa-fall{to{transform:translateY(110vh) rotate(600deg);opacity:.85;}}
 /* The burst materializes from a degraded blur to sharp before it falls. */
 @keyframes zd-hexa-resolve{from{filter:blur(7px);opacity:0;}to{filter:blur(0);opacity:1;}}
@@ -182,13 +208,14 @@ html.${ROOT_CLASS}.${FULL_CLASS} yt-live-chat-author-chip #author-name{color:#FF
   html.${ROOT_CLASS}.${FULL_CLASS},html.${ROOT_CLASS}.${FULL_CLASS} body,html.${ROOT_CLASS}.${FULL_CLASS} ytd-app,
   html.${ROOT_CLASS}.${FULL_CLASS} #masthead-container,html.${ROOT_CLASS}.${FULL_CLASS} ytd-masthead{transition:none!important;}
   .zd-hexa-badge,.zd-hexa-gol,.zd-hexa-toast{animation:none!important;}
-  html.${ROOT_CLASS} #masthead-container::after{animation:none!important;}
+  .zd-hexa-bunting,.zd-hexa-bunting i{animation:none!important;}
+  html.${ROOT_CLASS} .ytp-play-progress{animation:none!important;}
   .zd-hexa-toast{transition:none!important;}
   .zd-hexa-invite{transition:none!important;opacity:1!important;transform:translateX(-50%)!important;}
   .zd-hexa-gol,.zd-hexa-confetti,.zd-hexa-boot{display:none!important;} /* no confetti/boot -> hide trigger */
 }
 @media (forced-colors: active){
-  html.${ROOT_CLASS} #masthead-container::after,.zd-hexa-confetti,.zd-hexa-boot{display:none!important;}
+  .zd-hexa-bunting,.zd-hexa-confetti,.zd-hexa-boot{display:none!important;}
 }
 `;
 
@@ -200,7 +227,7 @@ let installed = false;
 let active = false;
 let keepAlive = null;              // re-attaches decorative nodes after re-renders
 let inviteTimer = null;            // auto-dismiss timer for the opt-in invite
-const nodes = { badgeMast: null, gol: null, invite: null };
+const nodes = { badgeMast: null, bunting: null, gol: null, invite: null };
 
 /** Insert the dormant <style> once. Cheap; does nothing on repeat calls. */
 export function install() {
@@ -292,8 +319,12 @@ function make(tag, cls, text) {
 
 function buildBadge() {
     const b = make('span', 'zd-hexa-badge');
-    b.append(make('span', null, 'RUMO AO HEXA'));
-    b.append(make('span', 'zd-hexa-stars', '★★★★★☆')); // 5 titles + the aspirational 6th
+    b.append(make('span', 'zd-hexa-cap'));                          // tricolor left cap
+    b.append(make('span', 'zd-hexa-badge-label', 'RUMO AO HEXA'));
+    const stars = make('span', 'zd-hexa-stars');
+    stars.append(make('span', 'zd-hexa-star-on', '★★★★★'));         // 5 titles, gold
+    stars.append(make('span', 'zd-hexa-star-6', '★'));             // the aspirational 6th, in blue
+    b.append(stars);
     return b;
 }
 
@@ -302,7 +333,27 @@ function buildBadge() {
 // isConnected test, re-adding only when needed.
 function ensureNodes() {
     ensureMastheadBadge();
+    ensureBunting();
     ensureGolButton();
+}
+
+function buildBunting() {
+    const b = make('div', 'zd-hexa-bunting');
+    const colors = ['#009C3B', '#FFDF00', '#002776'];
+    for (let i = 0; i < 30; i++) {
+        const p = document.createElement('i');
+        p.style.setProperty('--c', colors[i % 3]);
+        p.style.animationDelay = ((i % 6) * 0.12) + 's';   // a travelling wave along the string
+        b.appendChild(p);
+    }
+    return b;
+}
+
+function ensureBunting() {
+    if (nodes.bunting && nodes.bunting.isConnected) return;
+    if (!document.getElementById('masthead-container')) return; // wait for the masthead
+    nodes.bunting = buildBunting();
+    document.body.appendChild(nodes.bunting);                    // fixed; on body so nothing clips it
 }
 
 function ensureMastheadBadge() {
@@ -318,7 +369,7 @@ function ensureGolButton() {
     if (nodes.gol && nodes.gol.isConnected) return;
     const player = document.getElementById('movie_player');
     if (!player) return;
-    const btn = make('button', 'zd-hexa-gol', 'GOL!');
+    const btn = make('button', 'zd-hexa-gol', '⚽ GOL!');
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Comemorar gol do Brasil');
     btn.addEventListener('click', fireConfetti);
@@ -342,17 +393,20 @@ function fireConfetti() {
     const layer = make('div', 'zd-hexa-confetti');
     const colors = ['#009C3B', '#FFDF00', '#002776'];   // flag colors, no ivory
     const TRICOLOR = 'linear-gradient(#009C3B 0 33%,#FFDF00 33% 66%,#002776 66% 100%)';
-    for (let i = 0; i < 42; i++) {
+    for (let i = 0; i < 46; i++) {
         const p = document.createElement('i');
         p.style.left = Math.random() * 100 + 'vw';
-        if (i % 6 === 0) {                              // every 6th piece is a tricolor flag
+        const r = i % 5;
+        if (r === 0) {                                  // little Brazil flag
+            p.className = 'zd-hexa-bandeira';
+        } else if (r === 1) {                           // tricolor pennant
             p.className = 'zd-hexa-flag';
             p.style.background = TRICOLOR;
-        } else {
+        } else {                                        // flat confetti
             p.style.background = colors[i % colors.length];
         }
         p.style.animationDuration = (1.4 + Math.random() * 1.0) + 's';
-        p.style.animationDelay = (Math.random() * 0.2) + 's';
+        p.style.animationDelay = (Math.random() * 0.25) + 's';
         layer.appendChild(p);
     }
     document.body.appendChild(layer);
