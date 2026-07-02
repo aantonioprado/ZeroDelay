@@ -42,6 +42,12 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   fundo circular. Os SVG inline sem `xmlns` caíam no namespace nulo ao serem
   parseados como `image/svg+xml`; `parseSvg` agora usa `text/html`, que aplica o
   namespace SVG corretamente. O QR Code do PIX segue funcionando.
+- Vazamentos de memória em navegações consecutivas: listeners presos ao
+  `<video>` antigo quando o YouTube trocava o elemento (ex.: live → live) sem
+  removê-los; risco de listeners duplicados em `chrome.storage.onChanged` caso
+  o content script fosse reinicializado na mesma aba; e uma race condition no
+  `setInterval` de detecção do player quando `yt-navigate-finish` disparava em
+  sequência rápida.
 
 ## [1.1.0] - 2026-06-30
 
