@@ -229,42 +229,45 @@ body {
     gap: 11px;
 }
 
-/* The signal seal, composed as the "○" leading the wordmark: a hollow gray ring
- * while degraded, lighting up to a solid red disc (+ glow + pulse) when synced.
- * State comes from the data-signal hook in refresh(); no words to localize. */
-.brand-dot {
-    position: relative;
-    flex: none;
-    width: 15px;
-    height: 15px;
-    margin-top: 4px;
-    border-radius: 50%;
-    border: 3px solid var(--degraded);
-    background: transparent;
-    transition: border-color 220ms var(--ease), background 220ms var(--ease), box-shadow 220ms var(--ease);
+/* The "o" in Zer(o)Delay IS the live seal: plain mono glyph while degraded, a
+ * glowing red disc (+ pulse) covering it when synced. Departure Mono is fixed
+ * pitch, so the 4th cell centre is a reliable 3.5ch from the text start. Tune
+ * --o-x / --o-y if the disc drifts off the glyph. */
+.brand-name {
+    --o-x: 3.5ch;
+    --o-y: 0.56em;
 }
 
-/* Pulse ring — synced only. Centred with margin so the scale animation is free. */
-.brand-dot::after {
+.brand-name::before,
+.brand-name::after {
     content: "";
     position: absolute;
-    inset: 0;
-    margin: auto;
-    width: 15px;
-    height: 15px;
+    left: var(--o-x);
+    top: var(--o-y);
+    width: 0.66em;
+    height: 0.66em;
     border-radius: 50%;
-    border: 2px solid var(--sync);
+    transform: translate(-50%, -50%);
     opacity: 0;
+    pointer-events: none;
 }
 
-[data-signal="synced"] .brand-dot {
-    border-color: var(--sync);
+.brand-name::before {
     background: var(--sync);
-    box-shadow: 0 0 12px -1px var(--sync-glow);
+    box-shadow: 0 0 10px -1px var(--sync-glow);
+    transition: opacity 220ms var(--ease);
 }
 
-[data-signal="synced"] .brand-dot::after {
-    opacity: 0.65;
+.brand-name::after {
+    border: 2px solid var(--sync);
+}
+
+[data-signal="synced"] .brand-name::before {
+    opacity: 1;
+}
+
+[data-signal="synced"] .brand-name::after {
+    opacity: 0.6;
     animation: pulse 2s var(--ease) infinite;
 }
 
@@ -285,9 +288,10 @@ body {
 }
 
 .brand-name {
+    position: relative;
     margin: 0;
     font-family: var(--font-mono);
-    /* Bigger hero wordmark so the "○" tally reads as part of the lockup. */
+    /* Bigger hero wordmark so the "o" seal reads as part of the lockup. */
     font-size: 19px;
     font-weight: 600;
     letter-spacing: 0;
@@ -1136,10 +1140,13 @@ body {
     box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
-/* PIX area as a tear-off coupon: a solid rounded card with a single dashed
- * perforation line low down (between the QR stub and the copy action) capped by
- * two punched side notches — the classic ticket read. BR-only (intl replaces). */
+/* PIX area as a tear-off coupon: a solid rounded card with ONE dashed perforation
+ * line and a single clean semicircle notch punched into each side ON that line
+ * (via mask, so the border curves around the bite) — the classic ticket read
+ * (à la the 荷包 / LÉONE refs). BR-only (intl links replace it). */
 .support-pix {
+    --tear: 66px;
+    /* distance of the perforation line from the coupon bottom */
     position: relative;
     display: flex;
     flex-direction: column;
@@ -1149,29 +1156,16 @@ body {
     border: 2px solid var(--border);
     border-radius: var(--radius-sm);
     background:
-        repeating-linear-gradient(90deg, var(--text-faint) 0 5px, transparent 5px 11px) center bottom 66px / calc(100% - 26px) 2px no-repeat,
+        repeating-linear-gradient(90deg, var(--text-faint) 0 4px, transparent 4px 9px) center bottom var(--tear) / calc(100% - 30px) 2px no-repeat,
         var(--surface-2);
-}
-
-/* The two side notches sit on the perforation line and read as punched cut-outs. */
-.support-pix::before,
-.support-pix::after {
-    content: "";
-    position: absolute;
-    bottom: 60px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--surface);
-    box-shadow: inset 0 0 0 2px var(--border);
-}
-
-.support-pix::before {
-    left: -8px;
-}
-
-.support-pix::after {
-    right: -8px;
+    -webkit-mask:
+        radial-gradient(circle 11px at left calc(100% - var(--tear)), #0000 97%, #000) no-repeat,
+        radial-gradient(circle 11px at right calc(100% - var(--tear)), #0000 97%, #000) no-repeat;
+    mask:
+        radial-gradient(circle 11px at left calc(100% - var(--tear)), #0000 97%, #000) no-repeat,
+        radial-gradient(circle 11px at right calc(100% - var(--tear)), #0000 97%, #000) no-repeat;
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
 }
 
 .support-qr {
