@@ -31,12 +31,15 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 ### Alterado
 
 - **Interface do popup repaginada** com a linguagem visual "degradado → nítido":
-  tipografia **Departure Mono** (self-hosted), ícones de modo que fazem *morph* de
-  pixelado (**Pixelarticons**) para nítido (**Lucide**) no hover/foco/seleção,
-  paleta de sinal cinza↔vermelho espelhando o selo de "ao vivo" do YouTube, selo
-  global LIVE↔SYNCED (tally light) e textura de scanline que some ao sincronizar.
-  Puramente visual — nenhuma mudança de comportamento, storage ou i18n. Fontes e
-  ícones são vendorados localmente (sem CDN) e creditados no
+  tipografia **Departure Mono** (self-hosted) em títulos e números; ícones de modo
+  que fazem *morph* de pixelado (**Pixelarticons**) para nítido (**Lucide**) no
+  hover/foco/seleção; paleta de sinal cinza↔vermelho espelhando o selo de "ao
+  vivo" do YouTube; o "o" de Zer**o**Delay como selo LIVE que morfa de pixel-art
+  para um disco vermelho ao sincronizar; sistema de "sticker" com sombra dura nos
+  botões; CTA de apoio como balão que sai do botão; área do PIX como cupom
+  destacável com um café pixel por valor; e textura de scanline que some ao
+  sincronizar. Puramente visual — nenhuma mudança de comportamento, storage ou
+  chaves i18n. Fontes e ícones são vendorados localmente (sem CDN) e creditados no
   `THIRD-PARTY-NOTICES.md` (Departure Mono — SIL OFL; Pixelarticons — MIT;
   Lucide — ISC).
 - Maior resiliência do motor de catch-up.
