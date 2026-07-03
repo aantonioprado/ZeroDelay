@@ -186,8 +186,14 @@ export const lastModeKey = 'lastMode';
  */
 export const hexaSuggestKey = 'hexaSuggest';
 
-/** MODO HEXA — the "full theme" (broad green page repaint). Default ON. */
+/** MODO HEXA — optional "full theme" (broad green page repaint). Default OFF —
+ * the base theme stays a narrow accent so it never reads as "the real YouTube". */
 export const hexaFullKey = 'hexaFull';
+
+/** MODO HEXA — mirrors whether the theme is currently ON, so the popup can wear a
+ * few hexa touches. Written by content.js on activate/deactivate (best-effort;
+ * reflects the last tab that flipped it). */
+export const hexaActiveKey = 'hexaActive';
 
 /**
  * Write a one-shot "jump to live" signal to storage.

@@ -30,10 +30,16 @@ const FULL_CLASS = 'zd-hexa-full';
 const FS_CLASS = 'zd-hexa-fs';
 // Overshoot spring, same feel as the extension's popup (--spring).
 const SPRING = 'cubic-bezier(.2,.9,.25,1.18)';
+// The chant ("OLÊ OLÊ OLÁ") uses the brand face, Departure Mono, on the page too.
+// Resolved from this module's own URL so the theme stays free of chrome.* APIs; the
+// woff2 must be listed in web_accessible_resources so the YouTube page can load it.
+const FONT_URL = new URL('../fonts/DepartureMono-Regular.woff2', import.meta.url).href;
 
 // Brazil flag palette. Yellow is used for FILLS/graphics only (never body text
 // — #FFDF00 on light is unreadable); accent text uses the softer canary #FFE44D.
 const CSS = `
+/* Brand face (Departure Mono) for the activation chant — self-hosted, OFL. */
+@font-face{font-family:'ZD Hexa Display';src:url('${FONT_URL}') format('woff2');font-weight:400;font-style:normal;font-display:swap;}
 /* ===== CORE (always on with .zd-hexa): a NARROW accent, not a repaint ==========
    It dresses the user's page (player + a masthead accent + the branded nodes); it
    does not recolor YouTube's chrome. Less noise, and no "is this the real
@@ -48,9 +54,9 @@ html.${ROOT_CLASS}:not(.${FS_CLASS}) .ytp-play-progress{
 html.${ROOT_CLASS}:not(.${FS_CLASS}) .ytp-scrubber-button{background:#FFE14D!important;box-shadow:0 0 0 2px rgba(0,39,118,.5)!important;}
 html.${ROOT_CLASS}:not(.${FS_CLASS}) .ytp-load-progress{background:rgba(0,39,118,.85)!important;}
 @keyframes zd-hexa-bar{from{background-position:0 0;}to{background-position:300% 0;}}
-/* LIVE badge tinted to the flag (restored): gold dot + ivory text. */
-html.${ROOT_CLASS}:not(.${FS_CLASS}) .ytp-live-badge::before{background:#FFDF00!important;}
-html.${ROOT_CLASS}:not(.${FS_CLASS}) .ytp-live-badge{color:#FFF6D5!important;}
+/* The LIVE badge is deliberately LEFT NATIVE (red) — red = "you're at the live
+   edge", which is exactly what ZeroDelay delivers; tinting it would bury the one
+   signal that tells the viewer they're actually live. */
 /* Masthead accent = the bunting garland below (no coloured border line, which
    clashed with the flags' own string). */
 /* Bunting garland (varal de bandeirinhas) hanging from the masthead — the flags
@@ -61,6 +67,17 @@ html.${ROOT_CLASS}:not(.${FS_CLASS}) .ytp-live-badge{color:#FFF6D5!important;}
   background-size:132px 44px;animation:zd-hexa-drop .5s ${SPRING} both;
 }
 @keyframes zd-hexa-drop{from{transform:translateY(-22px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+/* Chat column is lifted above the bunting so the garland never covers the chat. */
+html.${ROOT_CLASS} #secondary{position:relative;z-index:1801;}
+/* A subtle green wash on the page (dark: green-black; light: pale green) — the
+   selecao's field, kept subtle so YouTube's text stays perfectly readable. */
+html.${ROOT_CLASS}[dark],html.${ROOT_CLASS}[dark] body,html.${ROOT_CLASS}[dark] ytd-app{background:#0a1c10!important;}
+html.${ROOT_CLASS}:not([dark]),html.${ROOT_CLASS}:not([dark]) body,html.${ROOT_CLASS}:not([dark]) ytd-app{background:#eef7ee!important;}
+/* Subscribe button + notification bell wear Brazil yellow. */
+html.${ROOT_CLASS} ytd-subscribe-button-renderer .yt-spec-button-shape-next--filled,
+html.${ROOT_CLASS} #subscribe-button button{background:#FFDF00!important;color:#0a0a0a!important;}
+html.${ROOT_CLASS} ytd-notification-topbar-button-renderer button,
+html.${ROOT_CLASS} ytd-notification-topbar-button-renderer yt-icon{color:#FFDF00!important;}
 
 /* Animated logo: the YouTube play-button becomes a waving Brazil flag that grows
    the 6 hexa stars, holds a while, morphs back to the red icon, and loops — a slow
@@ -137,33 +154,35 @@ html.${ROOT_CLASS}.${FULL_CLASS}:not(.${FS_CLASS}) yt-live-chat-author-chip #aut
 /* Shaped like YouTube's own masthead buttons (e.g. +Criar): 36px pill, so it
    sits coherently next to them — branded by content, not by mimicking chrome. */
 .zd-hexa-badge{
-  display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 15px;box-sizing:border-box;
-  border-radius:20px;border:1px solid rgba(255,223,0,.3);
-  background:rgba(0,156,59,.18);color:#FFF6D5;
-  font:600 14px/1 Roboto,"Segoe UI",system-ui,sans-serif;letter-spacing:.2px;
-  white-space:nowrap;vertical-align:middle;animation:zd-hexa-pop .34s ${SPRING} both;
+  display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;box-sizing:border-box;
+  border-radius:20px;border:0;background:#009C3B;color:#FFF6D5;
+  font:800 13px/1 Roboto,"Segoe UI",system-ui,sans-serif;letter-spacing:.6px;
+  white-space:nowrap;vertical-align:middle;box-shadow:0 1px 3px rgba(0,0,0,.3);
+  animation:zd-hexa-pop .34s ${SPRING} both;
 }
-.zd-hexa-badge .zd-hexa-stars{display:inline-flex;gap:1px;font-size:12px;letter-spacing:1px;}
+.zd-hexa-badge .zd-hexa-stars{display:inline-flex;gap:2px;font-size:13px;letter-spacing:0;}
 .zd-hexa-badge .zd-hexa-star-on{color:#FFDF00;}
-.zd-hexa-badge .zd-hexa-star-6{color:#5b8cff;}
+.zd-hexa-badge .zd-hexa-star-6{color:#FFDF00;opacity:.85;}
 .zd-hexa-badge--masthead{margin:0 8px;align-self:center;}
-/* Sits in the watch action row, to the LEFT of Like — same 36px pill as the
-   native action buttons, gold so it still pops (and pulses) among the grey ones. */
+/* Sits in the watch action row, to the LEFT of Like, and behaves like a native
+   action button: neutral grey pill with a ball icon + label, same metrics. It
+   only turns gold ON CLICK, with a springy ball bounce (like the Like animation),
+   then settles back — the celebration is the interaction, not idle noise. */
 .zd-hexa-gol{
   display:inline-flex;align-items:center;gap:6px;flex:none;vertical-align:middle;box-sizing:border-box;
-  height:36px;padding:0 15px;margin-right:8px;cursor:pointer;border:0;border-radius:18px;
-  background:linear-gradient(#FFE44D,#FFC400);color:#04140A;
-  font:600 14px/1 Roboto,system-ui,sans-serif;letter-spacing:.2px;
-  box-shadow:0 2px 10px rgba(255,223,0,.35);
-  transition:transform .18s ${SPRING},box-shadow .2s ease;
-  animation:zd-hexa-pop .34s ${SPRING} both,zd-hexa-golpulse 1.9s ease-in-out .5s infinite;
+  height:40px;padding:0 16px;margin-right:8px;cursor:pointer;border:0;border-radius:20px;
+  background:rgba(255,255,255,.1);color:#f1f1f1;
+  font:500 14px/1 Roboto,"Segoe UI",system-ui,sans-serif;letter-spacing:.2px;
+  transition:background .2s ease,color .2s ease;
+  animation:zd-hexa-pop .34s ${SPRING} both;
 }
-.zd-hexa-gol:hover{transform:translateY(-1px);box-shadow:0 2px 14px rgba(255,223,0,.55);}
-.zd-hexa-gol:active{transform:scale(.96);}
-.zd-hexa-gol:focus-visible{outline:3px solid #FFF6D5;outline-offset:2px;}
-@keyframes zd-hexa-golpulse{0%,100%{box-shadow:0 2px 10px rgba(255,223,0,.3);}50%{box-shadow:0 2px 16px rgba(255,223,0,.6);}}
+.zd-hexa-gol svg{width:24px;height:24px;flex:none;margin-left:-2px;}
 .zd-hexa-gol-icon{flex:none;display:block;}
 .zd-hexa-gol-label{line-height:1;}
+.zd-hexa-gol:hover{background:rgba(255,255,255,.18);}
+.zd-hexa-gol:focus-visible{outline:2px solid #FFF6D5;outline-offset:2px;}
+/* Turns gold only when a goal is scored (click / detection), then settles back. */
+.zd-hexa-gol.zd-hexa-scored{background:linear-gradient(#FFE44D,#FFC400);color:#04140A;}
 .zd-hexa-toast{
   position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(8px);
   z-index:2147483646;display:flex;align-items:center;gap:8px;padding:11px 17px;
@@ -186,24 +205,61 @@ html.${ROOT_CLASS}.${FULL_CLASS}:not(.${FS_CLASS}) yt-live-chat-author-chip #aut
    degraded -> nitido signature, wearing the jersey. */
 @keyframes zd-hexa-pop{from{opacity:0;transform:scale(.9);filter:blur(4px);}to{opacity:1;filter:blur(0);}}
 
-/* Activation "boot": a full-screen tricolor that resolves from blurred + scanline
-   (degraded) to sharp, then clears — the page putting on the shirt in the same
-   pixel -> nitido gesture the extension uses on the stream. One-shot; removed by JS. */
+/* Activation "boot": a tricolor 5-point star bursts in and HOLDS long enough to
+   read as a star (the trigger), then blows out to reveal a yellow festa field on
+   which the green "OLÊ OLÊ OLÁ" chant stacks in — the reference poster. One-shot. */
 .zd-hexa-boot{
   position:fixed;inset:0;z-index:2147483644;pointer-events:none;
-  background:linear-gradient(180deg,#009C3B 0 34%,#FFDF00 34% 67%,#002776 67% 100%);
-  animation:zd-hexa-boot .8s ease forwards;
+  display:flex;align-items:center;justify-content:center;
+  animation:zd-hexa-bootfade .3s ease 1.5s forwards; /* whole thing clears together */
 }
-.zd-hexa-boot::after{
-  content:'';position:absolute;inset:0;mix-blend-mode:multiply;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 2px,transparent 2px 5px);
+@keyframes zd-hexa-bootfade{to{opacity:0;}}
+/* The yellow ground fades in as the star opens out. */
+.zd-hexa-boot-field{
+  position:absolute;inset:0;background:#FFDF00;opacity:0;
+  animation:zd-hexa-bootfield .3s ease .5s forwards;
+}
+@keyframes zd-hexa-bootfield{to{opacity:1;}}
+/* Tricolor star (CBF energy): bursts to full-screen size, HOLDS so you actually
+   see the star, then scales past the edges + fades to hand over to the field. */
+.zd-hexa-boot-star{
+  position:absolute;inset:0;transform-origin:center;
+  background:linear-gradient(125deg,#009C3B 0 34%,#FFE14D 34% 67%,#2f7bff 67% 100%);
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  animation:zd-hexa-boot 1s cubic-bezier(.2,.7,.2,1) forwards;
 }
 @keyframes zd-hexa-boot{
-  0%{opacity:0;filter:blur(11px) saturate(1.6);transform:scale(1.06);}
-  22%{opacity:.92;}
-  55%{filter:blur(0) saturate(1);transform:scale(1);}
-  100%{opacity:0;filter:blur(0);transform:scale(1);}
+  0%{transform:scale(0) rotate(-60deg);opacity:1;}
+  26%{transform:scale(1) rotate(0deg);opacity:1;}   /* star clearly on screen */
+  46%{transform:scale(1) rotate(0deg);opacity:1;}   /* HOLD — read the star */
+  100%{transform:scale(7) rotate(12deg);opacity:0;} /* blow out + hand over to field */
 }
+/* The chant: green display type on the yellow field, stacked like a terrace song —
+   one big "OLÊ", a 2x3 grid, then the hexa stars. Uses the brand face (Departure). */
+.zd-hexa-boot-chant{
+  position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.08em;text-align:center;
+  font-family:'ZD Hexa Display',ui-monospace,monospace;color:#009C3B;line-height:.9;
+}
+.zd-hexa-chant-big{
+  font-size:clamp(54px,13vw,132px);letter-spacing:.02em;
+  transform:scale(0);opacity:0;animation:zd-hexa-chant .5s ${SPRING} .68s forwards;
+}
+.zd-hexa-chant-grid{display:grid;grid-template-columns:auto auto;gap:.06em .5em;font-size:clamp(30px,7.5vw,74px);}
+.zd-hexa-chant-grid span{transform:scale(0);opacity:0;animation:zd-hexa-chant .44s ${SPRING} forwards;}
+.zd-hexa-chant-grid span:nth-child(1),.zd-hexa-chant-grid span:nth-child(2){animation-delay:.8s;}
+.zd-hexa-chant-grid span:nth-child(3),.zd-hexa-chant-grid span:nth-child(4){animation-delay:.88s;}
+.zd-hexa-chant-grid span:nth-child(5),.zd-hexa-chant-grid span:nth-child(6){animation-delay:.96s;}
+.zd-hexa-chant-stars{
+  margin-top:.12em;color:#002776;font-size:clamp(16px,3.4vw,30px);letter-spacing:.25em;
+  opacity:0;animation:zd-hexa-chantstars .4s ease 1.04s forwards;
+}
+@keyframes zd-hexa-chant{
+  0%{transform:scale(0) rotate(-5deg);opacity:0;}
+  65%{transform:scale(1.12) rotate(2deg);opacity:1;}
+  100%{transform:scale(1) rotate(0);opacity:1;}
+}
+@keyframes zd-hexa-chantstars{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
 /* Opt-in invite: shown (theme still OFF) when a live Brazil game is detected.
    Clearly ZeroDelay's (carries the badge), never posing as YouTube. */
@@ -262,7 +318,7 @@ html.${FS_CLASS} .zd-hexa-boot{display:none!important;}
   html.${ROOT_CLASS} .ytp-play-progress{animation:none!important;}
   .zd-hexa-toast{transition:none!important;}
   .zd-hexa-invite{transition:none!important;opacity:1!important;transform:translateX(-50%)!important;}
-  .zd-hexa-gol,.zd-hexa-confetti,.zd-hexa-boot{display:none!important;} /* no confetti/boot -> hide trigger */
+  .zd-hexa-confetti,.zd-hexa-boot{display:none!important;} /* no confetti/boot flash */
 }
 @media (forced-colors: active){
   .zd-hexa-bunting,.zd-hexa-confetti,.zd-hexa-boot{display:none!important;}
@@ -285,6 +341,7 @@ let installed = false;
 let active = false;
 let keepAlive = null;              // re-attaches decorative nodes after re-renders
 let inviteTimer = null;            // auto-dismiss timer for the opt-in invite
+let golScoredTimer = null;         // reverts the GOL button's "scored" gold flash
 const nodes = { badgeMast: null, bunting: null, gol: null, logo: null, logoStars: null, invite: null };
 let logoHidden = [];               // YouTube logo <path>s we hid, to restore on deactivate
 let logoSvg = null;                // YouTube's logo <svg> we swapped into (to reset overflow)
@@ -303,6 +360,10 @@ export function install() {
     style.id = STYLE_ID;
     style.textContent = CSS;
     (document.head || document.documentElement).appendChild(style);
+    // Warm the chant font so the first activation renders it, not a fallback.
+    if (document.fonts && typeof document.fonts.load === 'function') {
+        document.fonts.load("64px 'ZD Hexa Display'").catch(() => {});
+    }
 }
 
 /**
@@ -386,8 +447,8 @@ function buildBadge() {
     const b = make('span', 'zd-hexa-badge');
     b.append(make('span', 'zd-hexa-badge-label', 'RUMO AO HEXA'));
     const stars = make('span', 'zd-hexa-stars');
-    stars.append(make('span', 'zd-hexa-star-on', '★★★★★'));         // 5 titles, gold
-    stars.append(make('span', 'zd-hexa-star-6', '★'));             // the aspirational 6th, in blue
+    stars.append(make('span', 'zd-hexa-star-on', '★★★★★'));         // 5 titles won, gold
+    stars.append(make('span', 'zd-hexa-star-6', '☆'));             // the 6th still to conquer (hollow)
     b.append(stars);
     return b;
 }
@@ -442,8 +503,8 @@ function ensureGolButton() {
     if (!host) return;
     const btn = make('button', 'zd-hexa-gol');
     btn.type = 'button';
-    btn.setAttribute('aria-label', 'Comemorar gol do Brasil');
     btn.append(buildGolIcon(), make('span', 'zd-hexa-gol-label', 'GOL!'));
+    btn.setAttribute('aria-label', 'Comemorar gol do Brasil');
     btn.addEventListener('click', () => celebrateGoal());
     nodes.gol = btn;
     host.insertBefore(btn, host.firstChild);
@@ -533,6 +594,23 @@ function ensureLogoFlag() {
     logoSvg = logo;
 }
 
+// "Scored!": the button flashes gold and the ball bounces + spins (Web Animations
+// API), like the native Like reaction, then settles back to neutral.
+function scoreGol(btn) {
+    btn.classList.add('zd-hexa-scored');
+    const ball = btn.querySelector('svg');
+    if (ball && !reduceMotion() && typeof ball.animate === 'function') {
+        ball.animate([
+            { transform: 'scale(1) rotate(0)' },
+            { transform: 'scale(1.4) rotate(-22deg)', offset: 0.35 },
+            { transform: 'scale(.9) rotate(8deg)', offset: 0.62 },
+            { transform: 'scale(1) rotate(0)' },
+        ], { duration: 520, easing: 'cubic-bezier(.2,.9,.25,1.18)' });
+    }
+    clearTimeout(golScoredTimer);
+    golScoredTimer = setTimeout(() => btn.classList.remove('zd-hexa-scored'), 900);
+}
+
 function removeNodes() {
     for (const k of Object.keys(nodes)) {
         if (nodes[k]) { nodes[k].remove(); nodes[k] = null; }
@@ -588,7 +666,9 @@ let golLogoTimer = null;   // clears the logo's hard-flutter boost after a goal
  * @param {number} [durationMs]
  */
 export function celebrateGoal(durationMs = 3000) {
-    if (!active || reduceMotion() || isFullscreen()) return;
+    if (!active || isFullscreen()) return;
+    if (nodes.gol) scoreGol(nodes.gol);   // button flashes gold + ball bounces (bounce self-guards reduced motion)
+    if (reduceMotion()) return;           // no confetti / logo flutter under reduced motion
     goalStopAt = Date.now() + durationMs;
     // Kick the logo flag into a hard flutter for the celebration (refreshed on re-trigger).
     if (nodes.logo) {
@@ -616,13 +696,19 @@ export function celebrateGoal(durationMs = 3000) {
     wave();
 }
 
-// One-shot "boot" flash on activation: a tricolor that resolves blur -> sharp,
-// then clears (the page putting on the jersey). Skipped under reduced motion.
+// One-shot "boot" on activation: a tricolor star bursts open and the "OLÊ OLÊ OLÁ"
+// chant lands over it, then it clears. Skipped under reduced motion / fullscreen.
 function playBoot() {
     if (reduceMotion() || isFullscreen()) return;
     const b = make('div', 'zd-hexa-boot');
+    const chant = make('div', 'zd-hexa-boot-chant');
+    chant.append(make('span', 'zd-hexa-chant-big', 'OLÊ'));
+    const grid = make('div', 'zd-hexa-chant-grid');
+    for (const w of ['OLÊ', 'OLÊ', 'OLÊ', 'OLÊ', 'OLÁ', 'OLÁ']) grid.append(make('span', null, w));
+    chant.append(grid, make('div', 'zd-hexa-chant-stars', '★★★★★☆'));
+    b.append(make('div', 'zd-hexa-boot-field'), make('div', 'zd-hexa-boot-star'), chant);
     document.body.appendChild(b);
-    setTimeout(() => b.remove(), 850);
+    setTimeout(() => b.remove(), 1850);
 }
 
 function showToast(text) {

@@ -29,16 +29,39 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   dispara), **e** que a rajada seja majoritariamente comemorativa
   (`classifyHexaChatMessage`) — para **não comemorar gol do adversário** (lamento
   no chat não conta). Cooldown de 45s entre disparos.
+- **Modo Hexa — boot de ativação com o canto "OLÊ OLÊ OLÁ"**: a estrela tricolor
+  estoura e **segura o tempo de você vê-la** (o gatilho), depois se abre e entrega
+  um **campo amarelo** onde o grito **"OLÊ OLÊ OLÁ"** entra empilhado em verde (um
+  "OLÊ" grande + grade 2×3 + as estrelas do hexa), na fonte da marca (Departure
+  Mono, self-hosted também na página) — a festa da referência.
+- **Modo Hexa — botão GOL! com experiência de botão nativo**: neutro/cinza como o
+  like/dislike (mesmo tamanho, ícone de bola e espaçamento) e fica **dourado só ao
+  marcar** (clique ou detecção de gol), com a bola **quicando e girando** como a
+  reação do "gostei", voltando ao neutro em seguida.
+- **Modo Hexa — o popup veste a camisa**: enquanto o tema está ativo numa aba, o
+  **header do popup** ganha uma faixa verde full-bleed (o campo da seleção), uma
+  linha tricolor de recorte e o selo "o" do wordmark em ouro.
+- **Popup — ícones de cerveja redesenhados**: conjunto de traço padronizado
+  (copo americano → lata → long neck → caneca), com a **lata** agora de verdade
+  (ombro afunilando pra tampa + lacre, não mais um cilindro); o mug do header ganha
+  **borbulhas subindo** (carbonatação, recuperando a antiga fumacinha do café) e os
+  chips dão um "tim-tim" no hover. "R$ 10" não quebra mais linha.
 
 ### Alterado
 
-- **Modo Hexa**: restauradas características do tema original — o **tema verde
-  completo do YouTube** volta a vir **ligado por padrão** (ainda desligável em
-  "Tema completo no YouTube"), a **borda verde** sob o masthead e o **selo LIVE
-  dourado** no player.
+- **Modo Hexa — repintura por padrão é ESTREITA (opt-in para a completa)**: por
+  padrão o tema veste só o acento (barra do player, varal e os nós ZeroDelay), sem
+  repintar o YouTube inteiro — menos ambiguidade de "isto é o YouTube real?". O
+  **tema verde completo** continua existindo, agora **desligado por padrão** e
+  ativável em "Tema completo no YouTube"; quando ligado, ele traz também a **borda
+  verde** sob o masthead.
+- **Modo Hexa — selo LIVE permanece VERMELHO nativo**: o selo "AO VIVO" do player
+  não é tingido. Vermelho = "você está na borda ao vivo", que é justamente o que a
+  extensão entrega — tingi-lo enterraria o único sinal que diz ao torcedor que ele
+  está realmente ao vivo.
 - **Modo Hexa fica totalmente inerte em tela cheia**: nenhum overlay (badge,
-  varal, GOL!, confete, boot, toast, convite) e nenhum acento no player (barra,
-  selo) enquanto o vídeo está em fullscreen — tudo volta ao sair.
+  varal, GOL!, confete, boot, toast, convite) e nenhum acento no player (barra)
+  enquanto o vídeo está em fullscreen — tudo volta ao sair.
 
 ### Corrigido
 
